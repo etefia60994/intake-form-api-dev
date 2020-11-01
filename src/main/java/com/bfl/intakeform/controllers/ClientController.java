@@ -9,6 +9,15 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Collection;
 
+/**
+ * needs to be implemented
+ * - case managers can add clients(add client endpoint)
+ * - supervisor managers can assign a client to a case manager
+ * -
+ *
+ * **/
+
+
 @RestController
 @RequestMapping("/api")
 public class ClientController {

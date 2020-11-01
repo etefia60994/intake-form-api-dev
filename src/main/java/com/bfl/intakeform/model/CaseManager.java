@@ -29,6 +29,14 @@ public class CaseManager {
     @Column(name="LastName")
     private String lastName;
 
+    @Getter @Setter
+    @NotBlank
+    private String userName;
+
+    @Getter @Setter
+    @NotBlank
+    private String password;
+
     @Getter
     @OneToMany
     private final List<Client> clients = new ArrayList<>();
