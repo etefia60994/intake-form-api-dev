@@ -39,7 +39,9 @@ public class ServiceProviderService {
 
    /**
     * Add service provider
-    *
+    * @param authentication
+    * @param addServiceProviderRequest
+    * @return ResponseEntity
     *
     * **/
    public ResponseEntity addServiceProvider(Authentication authentication, AddServiceProviderRequest addServiceProviderRequest){
@@ -51,6 +53,9 @@ public class ServiceProviderService {
    /**
     * delete service provider
     * -only a director should be able to delete service provider
+    * @param authentication
+    * @param serviceProviderId
+    *
     * **/
    @Transactional
    public ResponseEntity deleteServiceProvider(Authentication authentication,long serviceProviderId){
@@ -79,6 +84,10 @@ public class ServiceProviderService {
    /**
     * add service provider to client
     * check if client belongs to casemanager
+    * @param authentication
+    * @param serviceProviderId
+    * @param clientId
+    * @return ResponseEntity
     * **/
    public ResponseEntity addServiceProviderToClient(Authentication authentication,long clientId,long serviceProviderId){
        CaseManager caseManager = caseManagerService.getCasemanagerFromAuthentication(authentication);
@@ -116,6 +125,10 @@ public class ServiceProviderService {
    /**
     * remove service provider from client
     *
+    * @param clientId
+    * @param serviceProviderId
+    * @param authentication
+    * @return ResponseEntity
     * **/
    @Transactional
    public ResponseEntity removeServiceProviderFromClient(Authentication authentication,long clientId,long serviceProviderId){

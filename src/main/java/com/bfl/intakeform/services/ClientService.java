@@ -45,6 +45,11 @@ public class ClientService {
 
     /**
      * Add a client
+     * @param authentication
+     * @param addClientInfo
+     *
+     * @return  ResponseEntity
+     *
      * **/
     public ResponseEntity addClient(Authentication authentication, AddClientInfo addClientInfo){
         CaseManager caseManager = caseManagerService.getCasemanagerFromAuthentication(authentication);
@@ -69,6 +74,9 @@ public class ClientService {
     /**
      * delete a client
      * a director can delete any client
+     * @param authentication
+     * @param clientId
+     * @return  ResponseEntity
      * **/
     @Transactional
     public ResponseEntity deleteClient(Authentication authentication,Long clientId){
@@ -95,6 +103,10 @@ public class ClientService {
     /**
      * Assign client to a casemanager
      * only supervisors or a director can do this
+     * @param clientId
+     * @param authentication
+     * @param caseManagerId
+     * @return ResponseEntity
      * */
     public ResponseEntity assignClient(Authentication authentication,long clientId,long caseManagerId){
         CaseManager caseManager = caseManagerService.getCasemanagerFromAuthentication(authentication);

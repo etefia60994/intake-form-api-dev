@@ -17,8 +17,19 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Optional;
 
+/**
+ * 
+ * Endpoints :
+ *
+ * addCasemanager
+ * deleteCasemanager
+ * promoteCasemanger
+ * demoteSupervisorCasemanager
+ *
+ * **/
+
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/casemanager")
 public class CaseManagerController {
 
     @Autowired
@@ -31,18 +42,26 @@ public class CaseManagerController {
         this.caseManagerRepository = caseManagerRepository;
     }
 
-    /**
-     * casemanager login and signup
-     * **/
 
-    @PostMapping("casemanager/add")
+    @PostMapping("add")
     public ResponseEntity addCaseManager(@RequestBody @Valid AddCaseManagerRequest addCaseManagerRequest){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         return caseManagerService.AddACaseManager(auth,addCaseManagerRequest);
     }
-    @PostMapping("casemanager/login")
+    @PostMapping("login")
     public ResponseEntity loginCaseManager(@RequestBody @Valid AuthenticationRequest authenticationRequest) throws Exception{
         return caseManagerService.loginCaseManager(authenticationRequest);
+    }
+    @PostMapping("promote/{id}")
+    public ResponseEntity promoteCaseManager(@PathVariable long id){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        return caseManagerService.promoteManager(auth,id);
+    }
+
+    @PostMapping("demote/{id}")
+    public ResponseEntity demoteCaseManager(@PathVariable long id){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        return caseManagerService.demoteSupervisor(auth,id);
     }
 
     @GetMapping("/caseManagers")
@@ -61,28 +80,28 @@ public class CaseManagerController {
 
 
 
-    @PostMapping("/caseManager")
-    ResponseEntity<CaseManager> createCaseManager(@Valid @RequestBody CaseManager caseManager) throws URISyntaxException {
-        CaseManager result= caseManagerRepository.save(caseManager);
-        return ResponseEntity.created(new URI("/api/category" + result.getId())).body(result);
-
-    }
-
-
-    @PutMapping("/caseManager/{id}")
-    ResponseEntity<CaseManager> updateCaseManager(@Valid @RequestBody CaseManager caseManager){
-        CaseManager result= caseManagerRepository.save(caseManager);
-        return ResponseEntity.ok().body(result);
-    }
-
-
-
-    @DeleteMapping("/caseManager/{id}")
-    ResponseEntity<?> deleteCaseManager(@PathVariable Long id){
-        caseManagerRepository.deleteById(id);
-        return ResponseEntity.ok().build();
-    }
-
+//    @PostMapping("/caseManager")
+//    ResponseEntity<CaseManager> createCaseManager(@Valid @RequestBody CaseManager caseManager) throws URISyntaxException {
+//        CaseManager result= caseManagerRepository.save(caseManager);
+//        return ResponseEntity.created(new URI("/api/category" + result.getId())).body(result);
+//
+//    }
+//
+//
+//    @PutMapping("/caseManager/{id}")
+//    ResponseEntity<CaseManager> updateCaseManager(@Valid @RequestBody CaseManager caseManager){
+//        CaseManager result= caseManagerRepository.save(caseManager);
+//        return ResponseEntity.ok().body(result);
+//    }
+//
+//
+//
+//    @DeleteMapping("/caseManager/{id}")
+//    ResponseEntity<?> deleteCaseManager(@PathVariable Long id){
+//        caseManagerRepository.deleteById(id);
+//        return ResponseEntity.ok().build();
+//    }
+//
 
 
 }

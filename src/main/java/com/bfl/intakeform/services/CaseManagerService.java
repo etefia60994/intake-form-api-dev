@@ -130,7 +130,8 @@ public class CaseManagerService {
 
     /**
      * login for caseManagers
-     *
+     * @param authenticationRequest
+     * @return ResponseEntity
      *
      * **/
     public ResponseEntity loginCaseManager(AuthenticationRequest authenticationRequest) throws Exception{
@@ -155,6 +156,10 @@ public class CaseManagerService {
     /**
      * promote manager to supervisor
      * can only be done by director
+     * @param authentication
+     * @param caseManagerId
+     * @return ResponseEntity
+     *
      * **/
     public ResponseEntity promoteManager(Authentication authentication,long caseManagerId){
         CaseManager caseManager = getCasemanagerFromAuthentication(authentication);
@@ -181,6 +186,11 @@ public class CaseManagerService {
     /**
      * demote supervisor to manager
      * can only be done by director
+     *
+     * @param authentication
+     * @param caseManagerId
+     * @return ResponseEntity
+     *
      * */
     public ResponseEntity demoteSupervisor(Authentication authentication,long caseManagerId){
         CaseManager caseManager = getCasemanagerFromAuthentication(authentication);
