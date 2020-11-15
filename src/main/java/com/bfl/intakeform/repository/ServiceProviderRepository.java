@@ -14,9 +14,9 @@ import java.util.List;
 @Repository
 public interface ServiceProviderRepository extends CrudRepository<ServiceProvider, Long> {
     //Find by Contact first/last name & Order by First Name
-    List<ServiceProvider> findByFirstNameOrLastNameOrderByFirstNameAsc(String firstName, String lastName);
+   // List<ServiceProvider> findByFirstNameOrLastNameOrderByFirstNameAsc(String firstName, String lastName);
 
     //Find by Resource category & Display by Company Name
-    Page<ServiceProvider> findByResourceCategoriesOrderByServiceProviderName(String resourceCategoryName, Pageable pageable);
+  //  Page<ServiceProvider> findByResourceCategoriesOrderByServiceProviderName(String resourceCategoryName, Pageable pageable);
 
 }

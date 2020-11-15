@@ -6,7 +6,7 @@ plugins {
 
 group = 'com.bfl'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '13'
+sourceCompatibility = '11'
 
 configurations {
 	developmentOnly
@@ -31,6 +31,7 @@ dependencies {
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	runtimeOnly 'com.microsoft.sqlserver:mssql-jdbc'
 	annotationProcessor 'org.projectlombok:lombok'
+	implementation 'io.jsonwebtoken:jjwt:0.9.1'
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {
 		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
 	}
@@ -40,4 +41,3 @@ dependencies {
 test {
 	useJUnitPlatform()
 }
-processResources { filesMatching("**/application.properties") { expand( project.properties ) } }

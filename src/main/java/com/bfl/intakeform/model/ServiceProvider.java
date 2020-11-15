@@ -26,11 +26,11 @@ public class ServiceProvider extends AbstractContactInfo {
     @Email
     private String email;
 
-    @ManyToMany
-    private final List<Client> clients = new ArrayList<>();
+   // @ManyToMany
+   // private final List<Client> clients = new ArrayList<>();
 
-    @ManyToMany
-    private final List<ResourceCategory> resourceCategories = new ArrayList<ResourceCategory>().stream().distinct().collect(Collectors.toList());
+   // @ManyToMany
+   // private final List<ResourceCategory> resourceCategories = new ArrayList<ResourceCategory>().stream().distinct().collect(Collectors.toList());
 
 
 
