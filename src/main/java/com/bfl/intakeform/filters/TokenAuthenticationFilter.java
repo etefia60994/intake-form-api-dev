@@ -31,6 +31,13 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
 
     private static final Logger logger = LoggerFactory.getLogger(TokenAuthenticationFilter.class);
 
+    /**
+     * @param request
+     * @param filterChain
+     * @param response
+     * sets the authentication from the jwt token
+     * @return void
+     * **/
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
@@ -57,7 +64,11 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
 
         filterChain.doFilter(request, response);
     }
-
+    /**
+     * @param request
+     * takes in the request and then return the jwt token
+     * @return String
+     * **/
     public String getJwtFromRequest(HttpServletRequest request) {
         String bearerToken = request.getHeader("Authorization");
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {

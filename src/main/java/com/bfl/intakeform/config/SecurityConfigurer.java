@@ -85,7 +85,10 @@ public class SecurityConfigurer extends WebSecurityConfigurerAdapter {
                         "/**/*.css",
                         "/**/*.js")
                 .permitAll()
-                .antMatchers("/api/**")
+                /**
+                 * antMatchers are all the endpoints that don't need authentication
+                 * */
+                .antMatchers("/api/casemanager/login")
                 .permitAll()
                 .anyRequest()
                 .authenticated();

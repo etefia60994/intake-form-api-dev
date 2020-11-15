@@ -25,6 +25,7 @@ public class TokenProvider {
 
     /**
      * @param authentication
+     * takes in authentication and creates the jwt token
      * @return string
      * */
     public String createToken(Authentication authentication) {

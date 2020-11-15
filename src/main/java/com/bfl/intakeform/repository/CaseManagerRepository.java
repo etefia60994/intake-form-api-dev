@@ -11,4 +11,6 @@ import java.util.Optional;
 public interface CaseManagerRepository extends CrudRepository<CaseManager, Long> {
     List<CaseManager> findByFirstNameOrLastNameOrderByFirstNameAsc(String firstName,String lastName);
     Optional<CaseManager> findByUserName(String userName);
+
+    boolean existsByUserName(String userName);
 }

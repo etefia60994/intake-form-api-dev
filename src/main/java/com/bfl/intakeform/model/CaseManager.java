@@ -11,7 +11,10 @@ import java.util.List;
 @NoArgsConstructor
 @Data
 @Entity
-@Table(name="CaseManager")
+@Table(name="CaseManager", uniqueConstraints = {
+        @UniqueConstraint(columnNames = {
+                "userName"
+        })})
 public class CaseManager {
 
     @Getter
@@ -36,6 +39,15 @@ public class CaseManager {
     @Getter @Setter
     @NotBlank
     private String password;
+
+    @Enumerated(EnumType.ORDINAL)
+    @Getter @Setter
+    private CaseManagerRoles caseManagerRole;
+
+    @Enumerated(EnumType.ORDINAL)
+    @Getter @Setter
+    private CaseManagerStatus caseManagerStatus;
+
 
     @Getter
     @OneToMany

@@ -26,7 +26,7 @@ public class ResourceCategory {
     @Column(name="resourceName")
     private String resourceName;
 
-    @ManyToMany
-    private final List<ServiceProvider> serviceProviderList = new ArrayList<>();
+   // @ManyToMany
+   // private final List<ServiceProvider> serviceProviderList = new ArrayList<>();
 
 }

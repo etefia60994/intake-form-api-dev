@@ -1,10 +1,15 @@
 package com.bfl.intakeform.controllers;
 
 import com.bfl.intakeform.model.CaseManager;
+import com.bfl.intakeform.payload.request.AddCaseManagerRequest;
+import com.bfl.intakeform.payload.request.AuthenticationRequest;
 import com.bfl.intakeform.repository.CaseManagerRepository;
+import com.bfl.intakeform.services.CaseManagerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -19,9 +24,25 @@ public class CaseManagerController {
     @Autowired
     private CaseManagerRepository caseManagerRepository;
 
+    @Autowired
+    private CaseManagerService caseManagerService;
     public CaseManagerController(CaseManagerRepository caseManagerRepository){
         super();
         this.caseManagerRepository = caseManagerRepository;
+    }
+
+    /**
+     * casemanager login and signup
+     * **/
+
+    @PostMapping("casemanager/add")
+    public ResponseEntity addCaseManager(@RequestBody @Valid AddCaseManagerRequest addCaseManagerRequest){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        return caseManagerService.AddACaseManager(auth,addCaseManagerRequest);
+    }
+    @PostMapping("casemanager/login")
+    public ResponseEntity loginCaseManager(@RequestBody @Valid AuthenticationRequest authenticationRequest) throws Exception{
+        return caseManagerService.loginCaseManager(authenticationRequest);
     }
 
     @GetMapping("/caseManagers")
