@@ -1,5 +1,6 @@
 package com.bfl.intakeform.model;
 
+import com.bfl.intakeform.payload.request.AddResourceCategoryRequest;
 import lombok.*;
 import org.springframework.stereotype.Service;
 
@@ -29,4 +30,7 @@ public class ResourceCategory {
    // @ManyToMany
    // private final List<ServiceProvider> serviceProviderList = new ArrayList<>();
 
+    public void requestSetter(AddResourceCategoryRequest addResourceCategoryRequest){
+        this.setResourceName(addResourceCategoryRequest.getResourceName());
+    }
 }

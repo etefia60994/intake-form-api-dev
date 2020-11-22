@@ -1,5 +1,6 @@
 package com.bfl.intakeform.model;
 
+import com.bfl.intakeform.payload.request.AddServiceProviderRequest;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -32,6 +33,15 @@ public class ServiceProvider extends AbstractContactInfo {
    // @ManyToMany
    // private final List<ResourceCategory> resourceCategories = new ArrayList<ResourceCategory>().stream().distinct().collect(Collectors.toList());
 
+    public void requestSetter(AddServiceProviderRequest addServiceProviderRequest){
+        this.setFirstName(addServiceProviderRequest.getFirstName());
+        this.setAddress(addServiceProviderRequest.getAddress());
+        this.setEmail(addServiceProviderRequest.getEmail());
+        this.setServiceProviderName(addServiceProviderRequest.getName());
+        this.setLastName(addServiceProviderRequest.getLastName());
+        this.setZip(addServiceProviderRequest.getZip());
+        this.setState(addServiceProviderRequest.getState());
+    }
 
 
 }

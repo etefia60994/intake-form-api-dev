@@ -6,6 +6,7 @@ import com.bfl.intakeform.payload.response.ApiResponse;
 import com.bfl.intakeform.repository.ClientRepository;
 import com.bfl.intakeform.repository.ClientToServiceProviderRepository;
 import com.bfl.intakeform.repository.ServiceProviderRepository;
+import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -45,6 +46,14 @@ public class ServiceProviderService {
     *
     * **/
    public ResponseEntity addServiceProvider(Authentication authentication, AddServiceProviderRequest addServiceProviderRequest){
+       CaseManager caseManager = caseManagerService.getCasemanagerFromAuthentication(authentication);
+       if(caseManager == null){
+           return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ApiResponse(false,"not authorized"));
+       }
+       if(!caseManager.getCaseManagerRole().equals(CaseManagerRoles.DIRECTOR)){
+           return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ApiResponse(false,"not a director"));
+       }
+
        ServiceProvider serviceProvider = new ServiceProvider(addServiceProviderRequest.getName()
        ,addServiceProviderRequest.getEmail());
        serviceProviderRepository.save(serviceProvider);
@@ -80,6 +89,36 @@ public class ServiceProviderService {
        //now delete the service provider
        serviceProviderRepository.delete(serviceProvider);
        return ResponseEntity.ok(new ApiResponse(true,"service provider deleted successfully"));
+   }
+   /**
+    * update service provider
+    * only director can do this
+    *
+    * **/
+   public ResponseEntity updateServiceProvider(Authentication authentication,AddServiceProviderRequest addServiceProviderRequest,long serviceProviderId){
+       CaseManager caseManager = caseManagerService.getCasemanagerFromAuthentication(authentication);
+       if(caseManager == null){
+           return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ApiResponse(false,"not authorized"));
+       }
+       if(!caseManager.getCaseManagerRole().equals(CaseManagerRoles.DIRECTOR)){
+           return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ApiResponse(false,"not a director"));
+       }
+       /**
+        * update name and email
+        * */
+       ServiceProvider serviceProvider;
+       //check if service exists
+       try{
+           serviceProvider = serviceProviderRepository.findById(serviceProviderId).get();
+       }catch (Exception e){
+           return ResponseEntity.notFound().build();
+       }
+       if(serviceProvider == null){
+           return ResponseEntity.notFound().build();
+       }
+       serviceProvider.requestSetter(addServiceProviderRequest);
+       serviceProviderRepository.save(serviceProvider);
+       return ResponseEntity.ok(new ApiResponse(true,"service provider updated successfully"));
    }
    /**
     * add service provider to client

@@ -44,6 +44,12 @@ public class ServiceProviderController {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         return serviceProviderService.addServiceProvider(auth,addServiceProviderRequest);
     }
+    @PutMapping("{id}")
+    public ResponseEntity updateServiceProvider(@RequestBody @Valid AddServiceProviderRequest addServiceProviderRequest,
+                                                @PathVariable long id){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        return serviceProviderService.updateServiceProvider(auth,addServiceProviderRequest,id);
+    }
     @DeleteMapping("{id}")
     public ResponseEntity deleteServiceProvider(@PathVariable long id){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();

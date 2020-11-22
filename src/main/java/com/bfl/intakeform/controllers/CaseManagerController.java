@@ -18,7 +18,7 @@ import java.net.URISyntaxException;
 import java.util.Optional;
 
 /**
- * 
+ *
  * Endpoints :
  *
  * addCasemanager
