@@ -1,5 +1,6 @@
 package com.bfl.intakeform.model;
 
+import com.bfl.intakeform.payload.request.UpdateCaseManagerNoPasswordRequest;
 import lombok.*;
 
 import javax.persistence.*;
@@ -52,4 +53,10 @@ public class CaseManager {
     @Getter
     @OneToMany
     private final List<Client> clients = new ArrayList<>();
+
+    public void requestSetterNoPassword(UpdateCaseManagerNoPasswordRequest updateCaseManagerNoPasswordRequest){
+        this.setUserName(updateCaseManagerNoPasswordRequest.getUserName());
+        this.setFirstName(updateCaseManagerNoPasswordRequest.getFirstName());
+        this.setLastName(updateCaseManagerNoPasswordRequest.getLastName());
+    }
 }

@@ -10,10 +10,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * TODO
+ *
  * add resource category to client
  *  -- need to create query to find all service providers containing that resource category
  *  -- then add both the resource category and service providers
@@ -23,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
  *     category from client
  *
  * **/
+@Service
 public class ResourceCategoryService {
     @Autowired
     ResourceCategoryRepository resourceCategoryRepository;

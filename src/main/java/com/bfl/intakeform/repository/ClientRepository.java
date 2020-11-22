@@ -1,5 +1,6 @@
 package com.bfl.intakeform.repository;
 
+import com.bfl.intakeform.model.CaseManager;
 import com.bfl.intakeform.model.Client;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.CrudRepository;
@@ -10,6 +11,8 @@ import java.util.List;
 public interface ClientRepository extends JpaRepository<Client, Long> {
     //Orders clients by first or last name
     List<Client> findByFirstNameOrLastNameOrderByLastNameDesc(String firstName, String lastName);
+
+    List<Client> findAllByCaseManager(CaseManager caseManager);
 
 
 }

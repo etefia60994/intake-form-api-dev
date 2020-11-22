@@ -15,9 +15,14 @@ import java.util.Collection;
 
 /**
  * Endpoints :
- * addCLient
- * removeClient
- * assignClientToCasemanager
+ *
+ * - add client
+ *
+ * - delete client
+ *
+ * - update client
+ *
+ * - assign client to casemanager
  *
  *
  * **/
@@ -46,6 +51,12 @@ public class ClientController {
     public ResponseEntity deleteClient(@PathVariable long id){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         return clientService.deleteClient(auth,id);
+    }
+    @PutMapping("{id}")
+    public ResponseEntity updateClient(@PathVariable long id,
+                                       @RequestBody AddClientInfo addClientInfo){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        return clientService.updateClient(auth,id,addClientInfo);
     }
     @PostMapping("{casemanagerId}/assign/{clientId}")
     public ResponseEntity assignClient(@PathVariable long casemanagerId,

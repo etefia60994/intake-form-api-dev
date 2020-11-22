@@ -18,6 +18,21 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.Collection;
 
+
+/**
+ * Endpoints
+ *
+ * - add resource category
+ *
+ * - update resource category
+ *
+ * - delete resource category
+ *
+ * - add resource category to client
+ *
+ * - remove resource category from client
+ *
+ * **/
 @RestController
 @RequestMapping("/api/resourceCategory")
 public class ResourceCategoryController {
@@ -63,6 +78,7 @@ public class ResourceCategoryController {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         return resourceCategoryService.removeResourceCategoryFromClient(auth,clientId,resourceCategoryId);
     }
+
 
     @GetMapping("/resourceCategory")
     public Iterable<ResourceCategory> resourceCategories(){

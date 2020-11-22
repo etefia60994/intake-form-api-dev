@@ -58,6 +58,5 @@ public class AddClientInfo {
     @Getter@Setter
     private int age;
 
-    @Getter@Setter
-    List<Long> serviceProvidersIds;
+
 }

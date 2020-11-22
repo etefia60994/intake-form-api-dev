@@ -3,6 +3,7 @@ package com.bfl.intakeform.controllers;
 import com.bfl.intakeform.model.CaseManager;
 import com.bfl.intakeform.payload.request.AddCaseManagerRequest;
 import com.bfl.intakeform.payload.request.AuthenticationRequest;
+import com.bfl.intakeform.payload.request.UpdateCaseManagerNoPasswordRequest;
 import com.bfl.intakeform.repository.CaseManagerRepository;
 import com.bfl.intakeform.services.CaseManagerService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,10 +22,18 @@ import java.util.Optional;
  *
  * Endpoints :
  *
- * addCasemanager
- * deleteCasemanager
- * promoteCasemanger
- * demoteSupervisorCasemanager
+ *  - add caseManager
+ *
+ *  - login for caseManager
+ *
+ *  - delete caseManager
+ *
+ *  - promote caseManager
+ *
+ *  - demote caseManager
+ *
+ *  - update caseManager info except for password
+ *
  *
  * **/
 
@@ -62,6 +71,17 @@ public class CaseManagerController {
     public ResponseEntity demoteCaseManager(@PathVariable long id){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         return caseManagerService.demoteSupervisor(auth,id);
+    }
+    @DeleteMapping("{id}")
+    public ResponseEntity deleteCaseManager(@PathVariable long id){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        return caseManagerService.deleteCaseManager(auth,id);
+    }
+    @PutMapping("{id}")
+    public ResponseEntity updateCaseManager(@PathVariable long id,
+                                            @RequestBody @Valid UpdateCaseManagerNoPasswordRequest updateCaseManagerNoPasswordRequest){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        return caseManagerService.updateCaseManagerInfo(auth,updateCaseManagerNoPasswordRequest,id);
     }
 
     @GetMapping("/caseManagers")

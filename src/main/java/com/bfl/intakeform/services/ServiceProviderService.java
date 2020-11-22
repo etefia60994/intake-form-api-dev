@@ -3,9 +3,7 @@ package com.bfl.intakeform.services;
 import com.bfl.intakeform.model.*;
 import com.bfl.intakeform.payload.request.AddServiceProviderRequest;
 import com.bfl.intakeform.payload.response.ApiResponse;
-import com.bfl.intakeform.repository.ClientRepository;
-import com.bfl.intakeform.repository.ClientToServiceProviderRepository;
-import com.bfl.intakeform.repository.ServiceProviderRepository;
+import com.bfl.intakeform.repository.*;
 import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -37,6 +35,10 @@ public class ServiceProviderService {
     ClientRepository clientRepository;
    @Autowired
     ClientToServiceProviderRepository clientToServiceProviderRepository;
+   @Autowired
+    ResourceCategoryRepository resourceCategoryRepository;
+   @Autowired
+    ServiceProviderToResourceCategoryRepository serviceProviderToResourceCategoryRepository;
 
    /**
     * Add service provider
@@ -199,5 +201,78 @@ public class ServiceProviderService {
        }
        clientToServiceProviderRepository.deleteByServiceProviderAndClient(serviceProvider,client);
        return ResponseEntity.ok(new ApiResponse(true,"removed service provider from client"));
+   }
+
+   /**
+    * Add service provider to resource category connection
+    * **/
+   public ResponseEntity connectServiceProviderToResourceCategory(Authentication authentication,
+                                                                  long serviceProviderId,
+                                                                  long resourceCategoryId){
+       CaseManager caseManager =caseManagerService.getCasemanagerFromAuthentication(authentication);
+       if(caseManager == null){
+           return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ApiResponse(false,"not authorized"));
+       }
+       if(!caseManager.getCaseManagerRole().equals(CaseManagerRoles.DIRECTOR)){
+           return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ApiResponse(false,"not a director"));
+       }
+       ServiceProvider serviceProvider;
+       try{
+           serviceProvider = serviceProviderRepository.findById(serviceProviderId).get();
+       }catch (Exception e){
+           return ResponseEntity.notFound().build();
+       }
+       ResourceCategory resourceCategory;
+       try{
+           resourceCategory = resourceCategoryRepository.findById(resourceCategoryId).get();
+       }catch (Exception e){
+           return ResponseEntity.notFound().build();
+       }
+       boolean connectionExists = serviceProviderToResourceCategoryRepository.existsByServiceProviderAndResourceCategory(
+               serviceProvider,resourceCategory);
+       if(connectionExists){
+           return ResponseEntity.badRequest().body(new ApiResponse(false,"already connected"));
+       }
+       ServiceProviderToResourceCategory serviceProviderToResourceCategory = new ServiceProviderToResourceCategory();
+       serviceProviderToResourceCategory.setResourceCategory(resourceCategory);
+       serviceProviderToResourceCategory.setServiceProvider(serviceProvider);
+       serviceProviderToResourceCategoryRepository.save(serviceProviderToResourceCategory);
+       return ResponseEntity.ok(new ApiResponse(true,"succesfully connected"));
+   }
+
+   /**
+    * Remove service provider to resource category connection
+    * **/
+   public ResponseEntity removeServiceProviderToResourceCategoryConnection(Authentication authentication,
+                                                                           long serviceProviderId,
+                                                                           long resourceCategoryId){
+
+
+       CaseManager caseManager =caseManagerService.getCasemanagerFromAuthentication(authentication);
+       if(caseManager == null){
+           return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ApiResponse(false,"not authorized"));
+       }
+       if(!caseManager.getCaseManagerRole().equals(CaseManagerRoles.DIRECTOR)){
+           return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ApiResponse(false,"not a director"));
+       }
+       ServiceProvider serviceProvider;
+       try{
+           serviceProvider = serviceProviderRepository.findById(serviceProviderId).get();
+       }catch (Exception e){
+           return ResponseEntity.notFound().build();
+       }
+       ResourceCategory resourceCategory;
+       try{
+           resourceCategory = resourceCategoryRepository.findById(resourceCategoryId).get();
+       }catch (Exception e){
+           return ResponseEntity.notFound().build();
+       }
+       boolean connectionExists = serviceProviderToResourceCategoryRepository.existsByServiceProviderAndResourceCategory(
+               serviceProvider,resourceCategory);
+       if(!connectionExists){
+           return ResponseEntity.badRequest().body(new ApiResponse(false,"not connected"));
+       }
+       serviceProviderToResourceCategoryRepository.deleteByServiceProviderAndResourceCategory(serviceProvider,resourceCategory);
+       return ResponseEntity.ok(new ApiResponse(true,"succesfuly disconnected"));
    }
 }

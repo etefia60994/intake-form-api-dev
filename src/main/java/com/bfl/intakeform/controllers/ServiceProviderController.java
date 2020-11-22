@@ -2,6 +2,7 @@ package com.bfl.intakeform.controllers;
 
 import com.bfl.intakeform.model.CaseManager;
 import com.bfl.intakeform.model.Client;
+import com.bfl.intakeform.model.ResourceCategory;
 import com.bfl.intakeform.model.ServiceProvider;
 import com.bfl.intakeform.payload.request.AddServiceProviderRequest;
 import com.bfl.intakeform.repository.CaseManagerRepository;
@@ -19,10 +20,16 @@ import java.util.Collection;
 
 /**
  * Endpoints :
- * addServiceProvider
- * deleteServiceProvider
- * addServiceProviderToClient
- * removeServiceProviderFromClient
+ *
+ * - add service provider
+ *
+ * - remove service provider
+ *
+ * - update service provider
+ *
+ * - add service provider to resource category connection
+ *
+ * - remove service provider to resource category connection
  *
  * **/
 @RestController
@@ -55,6 +62,19 @@ public class ServiceProviderController {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         return serviceProviderService.deleteServiceProvider(auth,id);
     }
+    @PostMapping("{serviceproviderId}/connect/{resourcecategoryId}")
+    public ResponseEntity connectServiceProviderAndResourceCategory(@PathVariable long serviceproviderId,
+                                                                    @PathVariable long resourcecategoryId){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        return serviceProviderService.connectServiceProviderToResourceCategory(auth,serviceproviderId,resourcecategoryId);
+    }
+    @PostMapping("{serviceproviderId}/disconnect/{resourcecategoryId}")
+    public ResponseEntity disconnectServiceProviderAndResourceCategory(@PathVariable long serviceproviderId,
+                                                                    @PathVariable long resourcecategoryId){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        return serviceProviderService.removeServiceProviderToResourceCategoryConnection(auth,serviceproviderId,resourcecategoryId);
+    }
+
     @PostMapping("{serviceproviderId}/add/{clientId}")
     public ResponseEntity addServiceProviderToClient(@PathVariable long serviceproviderId,
                                                      @PathVariable long clientId){
