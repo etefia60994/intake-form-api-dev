@@ -61,14 +61,14 @@ public class ClientService {
                 addClientInfo.getAge(),caseManager);
         client = clientRepository.save(client);
 
-        Iterable<ServiceProvider> serviceProviders =serviceProviderRepository.findAllById(addClientInfo.getServiceProvidersIds());
-        List<ClientToServiceProvider> clientToServiceProviders = new ArrayList<>();
-        for(ServiceProvider serviceProvider : serviceProviders){
-            ClientToServiceProvider clientToServiceProvider= new ClientToServiceProvider();
-            clientToServiceProvider.setClient(client);
-            clientToServiceProvider.setServiceProvider(serviceProvider);
-        }
-        clientToServiceProviderRepository.saveAll(clientToServiceProviders);
+//        Iterable<ServiceProvider> serviceProviders =serviceProviderRepository.findAllById(addClientInfo.getServiceProvidersIds());
+//        List<ClientToServiceProvider> clientToServiceProviders = new ArrayList<>();
+//        for(ServiceProvider serviceProvider : serviceProviders){
+//            ClientToServiceProvider clientToServiceProvider= new ClientToServiceProvider();
+//            clientToServiceProvider.setClient(client);
+//            clientToServiceProvider.setServiceProvider(serviceProvider);
+//        }
+//        clientToServiceProviderRepository.saveAll(clientToServiceProviders);
         return ResponseEntity.ok(new ApiResponse(true,"added client"));
     }
     /**
@@ -135,6 +135,28 @@ public class ClientService {
         clientRepository.save(client);
         return ResponseEntity.ok(new ApiResponse(true,"client assigned to manager succesfully"));
     }
+    /**
+     * update client
+     *
+     * **/
+    public ResponseEntity updateClient(Authentication authentication,long clientId,AddClientInfo addClientInfo){
+        CaseManager caseManager = caseManagerService.getCasemanagerFromAuthentication(authentication);
+        if(caseManager == null){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ApiResponse(false,"not authorized"));
+        }
+        Client client;
+        try{
+            client = clientRepository.findById(clientId).get();
+        }catch (Exception e){
+            return ResponseEntity.notFound().build();
+        }
+        if(client == null){
+            return ResponseEntity.notFound().build();
+        }
+        client.requestSetter(addClientInfo,caseManager);
+        return ResponseEntity.ok(new ApiResponse(true,"updated client"));
+    }
+
 
 
 }

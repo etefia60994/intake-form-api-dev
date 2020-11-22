@@ -5,8 +5,10 @@ import com.bfl.intakeform.exception.ResourceNotFoundException;
 import com.bfl.intakeform.model.CaseManager;
 import com.bfl.intakeform.model.CaseManagerRoles;
 import com.bfl.intakeform.model.CaseManagerStatus;
+import com.bfl.intakeform.model.Client;
 import com.bfl.intakeform.payload.request.AddCaseManagerRequest;
 import com.bfl.intakeform.payload.request.AuthenticationRequest;
+import com.bfl.intakeform.payload.request.UpdateCaseManagerNoPasswordRequest;
 import com.bfl.intakeform.payload.response.ApiResponse;
 import com.bfl.intakeform.payload.response.AuthenticationResponse;
 import com.bfl.intakeform.repository.CaseManagerRepository;
@@ -21,8 +23,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.criteria.CriteriaBuilder;
+import java.util.List;
 
 /***
  * This class is a service class that's going to include most of the casemanager
@@ -214,10 +218,68 @@ public class CaseManagerService {
         caseManagerRepository.save(newCaseManager);
         return ResponseEntity.ok(new ApiResponse(true,"Supervisor "+newCaseManager.getFirstName()+" demoted to regular caseManager"));
     }
+    /***
+     * update case manager info no password
+     * **/
+    public ResponseEntity updateCaseManagerInfo(Authentication authentication, UpdateCaseManagerNoPasswordRequest updateCaseManagerNoPasswordRequest,long caseManagerId){
 
+        /**
+         * check if username is unique or not
+         * */
+        boolean uniqueUserName = caseManagerRepository.existsByUserName(updateCaseManagerNoPasswordRequest.getUserName());
+        if(uniqueUserName){
+            return ResponseEntity.badRequest().body(new ApiResponse(false,"username already taken"));
+        }
+        CaseManager caseManager = getCasemanagerFromAuthentication(authentication);
+        if(caseManager == null){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ApiResponse(false,"not authorized"));
+        }
+        CaseManager newCaseManager;
+        try{
+            newCaseManager = caseManagerRepository.findById(caseManagerId).get();
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse(false,"no casemanager found with that id"));
+        }
+        if(caseManager.getCaseManagerRole().equals(CaseManagerRoles.REGULAR) && caseManager.getId()!= newCaseManager.getId()){
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ApiResponse(false,"not your profile"));
+        }
+        newCaseManager.requestSetterNoPassword(updateCaseManagerNoPasswordRequest);
+        caseManagerRepository.save(newCaseManager);
+        return ResponseEntity.ok(new ApiResponse(true,"succesfully updated profile"));
+    }
     /**
      * Delete casemanager account by id
+     *
      * **/
+    @Transactional
+    public ResponseEntity deleteCaseManager(Authentication authentication,long caseManagerId){
+        CaseManager caseManager = getCasemanagerFromAuthentication(authentication);
+        if(caseManager == null){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ApiResponse(false,"not authorized"));
+        }
+        if(!caseManager.getCaseManagerRole().equals(CaseManagerRoles.DIRECTOR)){
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ApiResponse(false,"not a director"));
+        }
+        CaseManager newCaseManager;
+        try{
+            newCaseManager = caseManagerRepository.findById(caseManagerId).get();
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse(false,"no casemanager found with that id"));
+        }
+        if(newCaseManager == null){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse(false,"no casemanager found with that id"));
+        }
+        /**
+         * get all clients using casemanager and set them to null
+         * **/
+        List<Client> clients = clientRepository.findAllByCaseManager(newCaseManager);
+        for(Client client : clients){
+            client.setCaseManager(null);
+        }
+        clientRepository.saveAll(clients);
+        caseManagerRepository.delete(newCaseManager);
+        return ResponseEntity.ok(new ApiResponse(true,"casemanager deleted succesfully"));
+    }
 
     /**
      * Restore casemanager account by id
